@@ -5,9 +5,14 @@ void setup() {
 }
 
 void draw() {
-  println("loading...");
+  println("loading...\n");
   JSONObject page = loadJSONObject("https://jisho.org/api/v1/search/words?keyword=door");
   words = loadFromJSONArray(page.getJSONArray("data"));
+  
+  LeveledPrinter printer = new LeveledPrinter();
+  printer.addString("word 0:");
+  words[0].addToLeveledPrinter(printer);
+  printer.printAll();
 }
 
 class Word {
@@ -31,6 +36,34 @@ class Word {
       senses[i] = new Sense(senses_array.getJSONObject(i));
     }
   }
+  void addToLeveledPrinter(LeveledPrinter printer) {
+    printer.levelIn();
+    printer.addString("is_common: " + is_common);
+    
+    printer.addString("tags:");
+    printer.levelIn();
+    for (String s : tags)
+      printer.addString(s);
+    printer.levelOut();
+    
+    printer.addString("japanese:");
+    printer.levelIn();
+    for (Japanese j : japanese)
+      j.addToLeveledPrinter(printer);
+    printer.levelOut();
+    
+    printer.addString("senses:");
+    printer.levelIn();
+    int i = 0;
+    for (Sense s : senses) {
+      printer.addString("sense " + i++ + ":");
+      printer.levelIn();
+      s.addToLeveledPrinter(printer);
+      printer.levelOut();
+    }
+    printer.levelOut();
+    printer.levelOut();
+  }
 }
 
 Word[] loadFromJSONArray(JSONArray array) {
@@ -47,6 +80,12 @@ class Japanese {
   Japanese(JSONObject json) {
     this.word = json.getString("word");
     this.reading = json.getString("reading");
+  }
+  String toString() {
+    return word + ": " + reading;
+  }
+  void addToLeveledPrinter(LeveledPrinter printer) {
+    printer.addString(word + ": " + reading);
   }
 }
 
@@ -77,6 +116,25 @@ class Sense {
     source = json.getJSONArray("source").getStringArray();
     info = json.getJSONArray("info").getStringArray();
   }
+  void addToLeveledPrinter(LeveledPrinter printer) {
+    printer.addString("english_definitions: ");
+    printer.levelIn();
+    for (String s : english_definitions)
+      printer.addString(s);
+    printer.levelOut();
+    
+    printer.addString("parts_of_speech: ");
+    printer.levelIn();
+    for (String s : parts_of_speech)
+      printer.addString(s);
+    printer.levelOut();
+    
+    printer.addString("links: ");
+    printer.levelIn();
+    for (Link l : links)
+      printer.addString(l.toString());
+    printer.levelOut();
+  }
 }
 
 class Link {
@@ -85,5 +143,38 @@ class Link {
   Link(JSONObject json) {
     text = json.getString("text");
     url = json.getString("url");
+  }
+  String toString() {
+    return text + ": " + url;
+  }
+}
+
+class LeveledPrinter {
+  ArrayList<String> strings;
+  ArrayList<Integer> levels;
+  int curlevel;
+  LeveledPrinter() {
+    strings = new ArrayList<String>();
+    levels = new ArrayList<Integer>();
+    curlevel = 0;
+  }
+  void levelIn() {
+    curlevel++;
+  }
+  void levelOut() {
+    curlevel--;
+  }
+  void addString(String s) {
+    strings.add(s);
+    levels.add(curlevel);
+  }
+  void printAll() {
+    for (int i = 0; i < strings.size(); i++) {
+      String padding = "";
+      for (int j = 0; j < levels.get(i); j++) {
+        padding += "|   ";
+      }
+      println(padding + strings.get(i));
+    }
   }
 }
