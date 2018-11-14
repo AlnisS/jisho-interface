@@ -27,21 +27,12 @@ class Sense {
   }
   void addToLeveledPrinter(LeveledPrinter printer) {
     printer.addString("english_definitions: ");
-    printer.levelIn();
-    for (String s : english_definitions)
-      printer.addString(s);
-    printer.levelOut();
+    printer.addAllLeveling(english_definitions);
     
     printer.addString("parts_of_speech: ");
-    printer.levelIn();
-    for (String s : parts_of_speech)
-      printer.addString(s);
-    printer.levelOut();
+    printer.addAllLeveling(parts_of_speech);
     
     printer.addString("links: ");
-    printer.levelIn();
-    for (Link l : links)
-      printer.addString(l.toString());
-    printer.levelOut();
+    printer.addAllLeveling(links);
   }
 }

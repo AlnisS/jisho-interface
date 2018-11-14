@@ -8,9 +8,6 @@ class Japanese {
   String toString() {
     return word + ": " + reading;
   }
-  void addToLeveledPrinter(LeveledPrinter printer) {
-    printer.addString(word + ": " + reading);
-  }
 }
 
 class Link {

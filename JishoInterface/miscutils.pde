@@ -1,4 +1,3 @@
-
 String concatenateJapaneseArray(Japanese[] japanese) {
   String result = "";
   for (Japanese j : japanese) {
@@ -29,4 +28,28 @@ void simpleAddWordToLeveledPrinter(Word word, LeveledPrinter printer, boolean in
     }
     printer.levelOut();
   }
+}
+
+void complexAddWordToLeveledPrinter(Word word, LeveledPrinter printer) {
+  printer.addString("word");
+  printer.levelIn();
+  printer.addString("is_common: " + word.is_common);
+    
+  printer.addString("tags:");
+  printer.addAllLeveling(word.tags);
+  
+  printer.addString("japanese:");
+  printer.addAllLeveling(word.japanese);
+  
+  printer.addString("senses:");
+  printer.levelIn();
+  int i = 0;
+  for (Sense s : word.senses) {
+    printer.addString("sense " + i++ + ":");
+    printer.levelIn();
+    s.addToLeveledPrinter(printer);
+    printer.levelOut();
+  }
+  printer.levelOut();
+  printer.levelOut();
 }
