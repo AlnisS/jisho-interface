@@ -30,7 +30,9 @@ class LeveledPrinter {
     }
   }
   void showAll() {
-    float textY = baseY;
+    showAll(baseY);
+  }
+  void showAll(float textY) {
     for (int i = 0; i < strings.size(); i++) {
       String padding = "";
       for (int j = 0; j < levels.get(i); j++) {
