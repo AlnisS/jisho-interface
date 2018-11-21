@@ -11,7 +11,6 @@ void setup() {
   words = loadFromJSONArray(page.getJSONArray("data"));
   println("done loading");
   textAlign(LEFT, TOP);
-  //noLoop();
 }
 
 void draw() {
@@ -37,9 +36,6 @@ void mouseWheel(MouseEvent event) {
   targetBaseY -= 10 * event.getCount();
 }
 
-//void keyPressed() {
-//  expando = key - 48;
-//}
 void mousePressed() {
   expando = highlight;
 }
